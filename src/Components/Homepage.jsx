@@ -32,7 +32,7 @@ function Homepage() {
                                 onClick={() => setActiveTab(tab.key)}
                                 className={`px-3  rounded-xl font-bold transition-all duration-300 text-base relative cursor-pointer
                                     ${activeTab === tab.key
-                                        ? "bg-[#755575] text-white"
+                                        ? "bg-[#755575] text-white hover:text-[#5B3E5B] hover:bg-white/40"
                                         : "text-[#8E798E] hover:text-[#5B3E5B] hover:bg-white/40"
                                     }
                                     `}
