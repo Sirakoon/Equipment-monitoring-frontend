@@ -11,6 +11,7 @@ import './App.css'
 
 const Home = lazy(() => import('./Components/Homepage'))
 const Equipment = lazy(() => import('./Components/EquipmentList'))
+const Dashboard = lazy(() => import('./Components/DashboardSum'))
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Equipments-List" element={<Equipment />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
 

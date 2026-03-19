@@ -51,14 +51,18 @@ function Homepage() {
                         <button
                             onClick={() => navigate('/Equipments-List')}
                             className="py-2 bg-sky-600 border border-3xl border-sky-600 max-w-45 w-full mx-auto rounded-3xl text-white 
-                            hover:bg-red-500 hover:text-black ">
+                            hover:bg-sky-300 hover:border-sky-300 hover:text-black ">
                             Equipment List
                         </button>
                     )}
 
                     {(activeTab === "all" || activeTab === "test1") && (
-                        <button >
-                            Dashboard summary
+                        <button
+                            onClick={() => navigate('/Dashboard')}
+                            className="py-2 bg-purple-600 border border-3xl border-purple-600 max-w-45 w-full mx-auto rounded-3xl text-white 
+                            hover:bg-purple-300 hover:border-purple-300 hover:text-black "
+                        >
+                            Dashboard Summary
                         </button>
                     )}
 
