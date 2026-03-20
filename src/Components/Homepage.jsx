@@ -20,7 +20,7 @@ function Homepage() {
 
                 {/* Tab filter */}
                 <div className="flex  justify-center mb-10 relative">
-                    <div className="inline-flex border border-gray-300 rounded-2xl h-10 min-w-60 backdrop-blur">
+                    <div className="inline-flex border border-gray-700 rounded-2xl h-10 min-w-60 backdrop-blur">
                         {[
                             { key: 'all', label: 'ALL' },
                             { key: 'test1', label: 'Test1' },
@@ -32,8 +32,8 @@ function Homepage() {
                                 onClick={() => setActiveTab(tab.key)}
                                 className={`px-3  rounded-xl font-bold transition-all duration-300 text-base relative cursor-pointer
                                     ${activeTab === tab.key
-                                        ? "bg-[#755575] text-white hover:text-[#5B3E5B] hover:bg-white/40"
-                                        : "text-[#8E798E] hover:text-[#5B3E5B] hover:bg-white/40"
+                                        ? "bg-gray-700 text-white hover:text-gray-700 hover:bg-white/40 transition duration-300"
+                                        : "text-gray-500 hover:text-[#5B3E5B] hover:bg-white/40"
                                     }
                                     `}
                             >
@@ -51,7 +51,7 @@ function Homepage() {
                         <button
                             onClick={() => navigate('/Equipments-List')}
                             className="py-2 bg-sky-600 border border-3xl border-sky-600 max-w-45 w-full mx-auto rounded-3xl text-white 
-                            hover:bg-sky-300 hover:border-sky-300 hover:text-black ">
+                            hover:bg-sky-300 hover:border-sky-300 hover:text-black transition duration-300">
                             Equipment List
                         </button>
                     )}
@@ -60,14 +60,17 @@ function Homepage() {
                         <button
                             onClick={() => navigate('/Dashboard')}
                             className="py-2 bg-purple-600 border border-3xl border-purple-600 max-w-45 w-full mx-auto rounded-3xl text-white 
-                            hover:bg-purple-300 hover:border-purple-300 hover:text-black "
+                            hover:bg-purple-300 hover:border-purple-300 hover:text-black transition duration-300"
                         >
                             Dashboard Summary
                         </button>
                     )}
 
                     {(activeTab === "all" || activeTab === "test1") && (
-                        <button>
+                        <button
+                            className="py-2 bg-yellow-600 text-white border border-3xl border-yellow-600 rounded-3xl max-w-45 w-full
+                            hover:bg-yellow-500 hover:border-yellow-500 hover:text-black transition duration-300 "
+                        >
                             test1
                         </button>
                     )}
