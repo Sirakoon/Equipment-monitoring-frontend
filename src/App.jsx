@@ -6,13 +6,13 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-const Home = lazy(() => import('./Components/Homepage'));
-const EquipmentList = lazy(() => import('./Components/EquipmentList'));
-const MaintenancePlan = lazy(() => import('./Components/MaintenancePlan'));
-const Report = lazy(() => import('./Components/Reports'));
-const BreakdownHistory = lazy(() => import('./Components/BreakdownHis'));
-const SpareParts = lazy(() => import('./Components/SparePart'));
-const UserManagement = lazy(() => import('./Components/UserManagement'));
+const Home = lazy(() => import('./pages/Homepage'));
+const EquipmentList = lazy(() => import('./pages/EquipmentList'));
+const MaintenancePlan = lazy(() => import('./pages/MaintenancePlan'));
+const Report = lazy(() => import('./pages/Reports'));
+const BreakdownHistory = lazy(() => import('./pages/BreakdownHis'));
+const SpareParts = lazy(() => import('./pages/SparePart'));
+const UserManagement = lazy(() => import('./pages/UserManagement'));
 
 function App() {
   return (

@@ -17,7 +17,7 @@ import {
     ChevronRight,
 } from "lucide-react";
 import { AnimatedThemeToggler } from "@/Components/ui/animated-theme-toggler";
-import LoginModal from "./LoginModal";
+import LoginModal from "../Components/LoginModal";
 
 function Homepage() {
     const navigate = useNavigate();

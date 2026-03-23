@@ -8,7 +8,7 @@ import {
   Clock3,
   CheckCircle2,
 } from "lucide-react";
-import BarNav from "./BarNav";
+import BarNav from "../Components/BarNav";
 
 export default function BreakdownHis() {
   const [histories, setHistories] = useState([]);

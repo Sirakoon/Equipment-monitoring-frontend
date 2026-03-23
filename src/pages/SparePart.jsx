@@ -9,7 +9,7 @@ import {
   ArrowDownUp,
   MapPin,
 } from "lucide-react";
-import BarNav from "./BarNav";
+import BarNav from "../Components/BarNav";
 
 export default function SparePart() {
   const [parts, setParts] = useState([]);

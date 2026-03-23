@@ -3,127 +3,137 @@ import {
   Search,
   Filter,
   RefreshCw,
-  Users,
-  ShieldCheck,
-  UserCheck,
-  UserX,
-  Mail,
+  FileBarChart2,
+  Download,
+  CalendarDays,
   Clock3,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
-import BarNav from "./BarNav";
+import BarNav from "../Components/BarNav";
 
-export default function UserManagement() {
-  const [users, setUsers] = useState([]);
+export default function Reports() {
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchReports = async () => {
       try {
         setLoading(true);
         setError("");
 
-        // const res = await fetch("http://localhost:7500/api/users");
-        // if (!res.ok) throw new Error("Failed to fetch users");
+        // const res = await fetch("http://localhost:7500/api/reports");
+        // if (!res.ok) throw new Error("Failed to fetch reports");
         // const data = await res.json();
-        // setUsers(data);
+        // setReports(data);
 
         setTimeout(() => {
-          setUsers([
+          setReports([
             {
               id: 1,
-              username: "admin",
-              fullName: "System Administrator",
-              email: "admin@company.local",
-              role: "Administrator",
-              department: "IT",
-              status: "Active",
-              lastLogin: "2026-03-23 08:15",
-              permissions: "Full access to all modules",
+              reportNo: "RPT-2026-001",
+              title: "Monthly Breakdown Report",
+              type: "Breakdown",
+              period: "March 2026",
+              generatedDate: "2026-03-20",
+              generatedBy: "System",
+              format: "PDF",
+              status: "Ready",
+              description: "Summary of equipment breakdown events, downtime, and major causes for the month.",
+              fileSize: "1.8 MB",
             },
             {
               id: 2,
-              username: "tech01",
-              fullName: "Somchai Prasert",
-              email: "somchai@company.local",
-              role: "Maintenance",
-              department: "Maintenance",
-              status: "Active",
-              lastLogin: "2026-03-22 19:40",
-              permissions: "Maintenance, breakdown, reports",
+              reportNo: "RPT-2026-002",
+              title: "PM Completion Report",
+              type: "Maintenance",
+              period: "March 2026",
+              generatedDate: "2026-03-21",
+              generatedBy: "Maintenance Admin",
+              format: "Excel",
+              status: "Ready",
+              description: "Completion status of preventive maintenance plans and overdue tasks.",
+              fileSize: "920 KB",
             },
             {
               id: 3,
-              username: "prod02",
-              fullName: "Anan Chaiyo",
-              email: "anan@company.local",
-              role: "Production",
-              department: "Production",
-              status: "Inactive",
-              lastLogin: "2026-03-10 14:20",
-              permissions: "Equipment view, report view",
+              reportNo: "RPT-2026-003",
+              title: "Equipment Health Summary",
+              type: "Equipment",
+              period: "Q1 2026",
+              generatedDate: "2026-03-22",
+              generatedBy: "System",
+              format: "PDF",
+              status: "Generating",
+              description: "Health score summary and critical equipment risk overview.",
+              fileSize: "-",
             },
             {
               id: 4,
-              username: "store01",
-              fullName: "Napat Suksai",
-              email: "napat@company.local",
-              role: "Store Keeper",
-              department: "Warehouse",
-              status: "Active",
-              lastLogin: "2026-03-23 07:55",
-              permissions: "Spare parts, stock movement",
+              reportNo: "RPT-2026-004",
+              title: "Spare Parts Usage Report",
+              type: "Inventory",
+              period: "March 2026",
+              generatedDate: "2026-03-18",
+              generatedBy: "Store Keeper",
+              format: "Excel",
+              status: "Failed",
+              description: "Monthly spare parts consumption, stock movement, and low stock analysis.",
+              fileSize: "-",
             },
           ]);
           setLoading(false);
         }, 600);
       } catch (err) {
-        setError(err.message || "Failed to load users");
+        setError(err.message || "Failed to load reports");
         setLoading(false);
       }
     };
 
-    fetchUsers();
+    fetchReports();
   }, []);
 
-  const filteredUsers = useMemo(() => {
-    return users.filter((item) => {
+  const filteredReports = useMemo(() => {
+    return reports.filter((item) => {
       const matchSearch =
-        item.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.department.toLowerCase().includes(searchTerm.toLowerCase());
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.reportNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.period.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.generatedBy.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchRole = roleFilter === "all" ? true : item.role === roleFilter;
+      const matchType = typeFilter === "all" ? true : item.type === typeFilter;
       const matchStatus =
         statusFilter === "all" ? true : item.status === statusFilter;
 
-      return matchSearch && matchRole && matchStatus;
+      return matchSearch && matchType && matchStatus;
     });
-  }, [users, searchTerm, roleFilter, statusFilter]);
+  }, [reports, searchTerm, typeFilter, statusFilter]);
 
   const summary = useMemo(() => {
     return {
-      total: users.length,
-      active: users.filter((u) => u.status === "Active").length,
-      inactive: users.filter((u) => u.status === "Inactive").length,
-      admins: users.filter((u) => u.role === "Administrator").length,
+      total: reports.length,
+      ready: reports.filter((r) => r.status === "Ready").length,
+      generating: reports.filter((r) => r.status === "Generating").length,
+      failed: reports.filter((r) => r.status === "Failed").length,
     };
-  }, [users]);
+  }, [reports]);
 
-  const roleOptions = useMemo(() => {
-    return [...new Set(users.map((item) => item.role))];
-  }, [users]);
+  const typeOptions = useMemo(() => {
+    return [...new Set(reports.map((item) => item.type))];
+  }, [reports]);
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Active":
+      case "Ready":
         return "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300";
-      case "Inactive":
+      case "Generating":
+        return "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300";
+      case "Failed":
         return "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300";
       default:
         return "bg-gray-100 text-gray-700 dark:bg-zinc-800 dark:text-zinc-300";
@@ -132,14 +142,15 @@ export default function UserManagement() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
-      <BarNav title="User Management" />
+      <BarNav title="Reports" />
 
       <div className="max-w-7xl mx-auto p-6 space-y-6 text-gray-900 dark:text-zinc-100">
+        {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">User Management</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">Reports Center</h1>
             <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-              Manage system accounts, roles, departments, and access permissions.
+              Browse generated reports, review operational summaries, and prepare exports for maintenance and equipment analysis.
             </p>
           </div>
 
@@ -152,33 +163,35 @@ export default function UserManagement() {
           </button>
         </div>
 
+        {/* Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <SummaryCard
-            title="Total Users"
+            title="Total Reports"
             value={summary.total}
-            icon={<Users size={18} />}
+            icon={<FileBarChart2 size={18} />}
             color="sky"
           />
           <SummaryCard
-            title="Active"
-            value={summary.active}
-            icon={<UserCheck size={18} />}
+            title="Ready"
+            value={summary.ready}
+            icon={<CheckCircle2 size={18} />}
             color="emerald"
           />
           <SummaryCard
-            title="Inactive"
-            value={summary.inactive}
-            icon={<UserX size={18} />}
-            color="rose"
+            title="Generating"
+            value={summary.generating}
+            icon={<Clock3 size={18} />}
+            color="amber"
           />
           <SummaryCard
-            title="Administrators"
-            value={summary.admins}
-            icon={<ShieldCheck size={18} />}
-            color="amber"
+            title="Failed"
+            value={summary.failed}
+            icon={<AlertTriangle size={18} />}
+            color="rose"
           />
         </div>
 
+        {/* Filters */}
         <div className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 md:p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Filter size={18} className="text-gray-500 dark:text-zinc-400" />
@@ -199,7 +212,7 @@ export default function UserManagement() {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by username, full name, email, department"
+                  placeholder="Search by report name, report no, period, generated by"
                   className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
@@ -207,17 +220,17 @@ export default function UserManagement() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-2">
-                Role
+                Type
               </label>
               <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
                 className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
               >
-                <option value="all">All Roles</option>
-                {roleOptions.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
+                <option value="all">All Types</option>
+                {typeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
                   </option>
                 ))}
               </select>
@@ -233,16 +246,18 @@ export default function UserManagement() {
                 className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
               >
                 <option value="all">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value="Ready">Ready</option>
+                <option value="Generating">Generating</option>
+                <option value="Failed">Failed</option>
               </select>
             </div>
           </div>
         </div>
 
+        {/* Loading / Error */}
         {loading && (
           <div className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-gray-500 dark:text-zinc-400">
-            Loading users...
+            Loading reports...
           </div>
         )}
 
@@ -256,15 +271,15 @@ export default function UserManagement() {
           <>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold">User List</h2>
+                <h2 className="text-lg font-semibold">Report List</h2>
                 <p className="text-sm text-gray-500 dark:text-zinc-400">
-                  Showing {filteredUsers.length} of {users.length} users
+                  Showing {filteredReports.length} of {reports.length} reports
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {filteredUsers.map((item) => (
+              {filteredReports.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm"
@@ -272,11 +287,11 @@ export default function UserManagement() {
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500">
-                        @{item.username}
+                        {item.reportNo}
                       </p>
-                      <h3 className="text-lg font-bold mt-1">{item.fullName}</h3>
+                      <h3 className="text-lg font-bold mt-1">{item.title}</h3>
                       <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-                        {item.role} • {item.department}
+                        {item.type} • {item.period}
                       </p>
                     </div>
 
@@ -288,25 +303,19 @@ export default function UserManagement() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                    <InfoItem label="Username" value={item.username} />
-                    <InfoItem label="Role" value={item.role} />
-                    <InfoItem label="Department" value={item.department} />
-                    <InfoItem label="Last Login" value={item.lastLogin} />
+                    <InfoItem label="Generated Date" value={item.generatedDate} />
+                    <InfoItem label="Generated By" value={item.generatedBy} />
+                    <InfoItem label="Format" value={item.format} />
+                    <InfoItem label="File Size" value={item.fileSize} />
                   </div>
 
-                  <div className="flex items-start gap-2 text-sm text-gray-500 dark:text-zinc-400 mb-4">
-                    <Mail size={16} className="mt-0.5 shrink-0" />
-                    <span>{item.email}</span>
-                  </div>
-
-                  <div className="flex items-start gap-2 text-sm text-gray-500 dark:text-zinc-400 mb-5">
-                    <Clock3 size={16} className="mt-0.5 shrink-0" />
-                    <span>
-                      Permission Scope:{" "}
-                      <span className="font-medium text-gray-700 dark:text-zinc-300">
-                        {item.permissions}
-                      </span>
-                    </span>
+                  <div className="mb-5">
+                    <p className="text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                      Description
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -314,23 +323,30 @@ export default function UserManagement() {
                       type="button"
                       className="px-4 py-2 rounded-xl bg-sky-600 text-white text-sm font-medium hover:bg-sky-700 transition"
                     >
-                      View Detail
+                      View Report
                     </button>
+
                     <button
                       type="button"
-                      className="px-4 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+                      disabled={item.status !== "Ready"}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition inline-flex items-center gap-2 ${
+                        item.status === "Ready"
+                          ? "border border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                          : "border border-gray-200 dark:border-zinc-800 text-gray-400 dark:text-zinc-500 cursor-not-allowed"
+                      }`}
                     >
-                      Edit User
+                      <Download size={16} />
+                      Download
                     </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            {filteredUsers.length === 0 && (
+            {filteredReports.length === 0 && (
               <div className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-10 text-center">
                 <p className="text-gray-500 dark:text-zinc-400">
-                  No users found for the selected filters.
+                  No reports found for the selected filters.
                 </p>
               </div>
             )}
