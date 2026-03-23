@@ -15,13 +15,16 @@ import {
     Activity,
     ClipboardList,
     ChevronRight,
+    LogOut,
 } from "lucide-react";
 import { AnimatedThemeToggler } from "@/Components/ui/animated-theme-toggler";
 import LoginModal from "../Components/LoginModal";
+import useAuth from "../hook/useAuth";
 
 function Homepage() {
     const navigate = useNavigate();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const { user, logout, isAuthenticated } = useAuth();
 
     const infraCards = [
         {
@@ -112,7 +115,7 @@ function Homepage() {
         },
         {
             label: "Reports & Analytics",
-            desc: "Generate dashboard views and backend-driven operational reports",
+            desc: "Generate dashboard views and operational reports",
             icon: <FileBarChart2 size={20} />,
             path: "/Reports",
         },
@@ -139,36 +142,55 @@ function Homepage() {
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-8">
                     <div>
                         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400 mb-2">
-                            Backend System Overview
+                            Equipment System
                         </p>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-zinc-100">
                             Equipment Management Platform
                         </h1>
                         <p className="text-gray-500 dark:text-zinc-400 mt-3 max-w-3xl">
-                            API-driven platform for equipment master data, maintenance records,
-                            failure logs, spare parts inventory, and operational reporting.
+                            Monitor equipment, maintenance records, breakdown history, spare parts, and reports in one place.
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-4xl bg-black dark:bg-white border border-gray-200 dark:border-zinc-700">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black dark:bg-white border border-gray-200 dark:border-zinc-700">
                             <span className="text-sm text-white dark:text-black font-medium">
                                 Theme
                             </span>
                             <AnimatedThemeToggler
                                 duration={500}
-                                size={20}
                                 className="text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950 p-2 rounded-full transition-colors"
                             />
                         </div>
 
-                        <button
-                            onClick={() => setIsLoginOpen(true)}
-                            className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-all"
-                        >
-                            <LogIn size={18} />
-                            Login
-                        </button>
+                        {isAuthenticated ? (
+                            <div className="flex items-center gap-3 rounded-2xl border border-gray-200 dark:border-zinc-700 px-3 py-2">
+                                <div className="text-right">
+                                    <p className="text-sm font-semibold text-gray-700 dark:text-zinc-200">
+                                        {user?.fullName}
+                                    </p>
+                                    <p className="text-xs text-gray-500 dark:text-zinc-400">
+                                        {user?.role}
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={logout}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-medium hover:opacity-90 transition"
+                                >
+                                    <LogOut size={16} />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setIsLoginOpen(true)}
+                                className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-all"
+                            >
+                                <LogIn size={18} />
+                                Login
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -200,7 +222,7 @@ function Homepage() {
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                     <section className="xl:col-span-2">
                         <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100 mb-4">
-                            Core Backend Modules
+                            Core Modules
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -240,7 +262,7 @@ function Homepage() {
                         <div className="flex items-center gap-2 mb-4">
                             <Activity size={18} className="text-sky-500" />
                             <h2 className="text-xl font-bold text-gray-800 dark:text-zinc-100">
-                                Recent Backend Activity
+                                Recent Activity
                             </h2>
                         </div>
 
@@ -263,15 +285,15 @@ function Homepage() {
                 <div className="mt-8 pt-6 border-t border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                     <div>
                         <h3 className="text-sm font-semibold text-gray-700 dark:text-zinc-300">
-                            Full-stack internal platform focused on backend data flow
+                            Internal platform for equipment and maintenance operations
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-                            Covers API design, authentication, database operations, inventory logic, maintenance workflow, and reporting.
+                            Start simple first, then connect real API step by step.
                         </p>
                     </div>
 
                     <div className="text-sm text-gray-400 dark:text-zinc-500">
-                        Backend Portfolio View
+                        Version 1.0
                     </div>
                 </div>
             </div>

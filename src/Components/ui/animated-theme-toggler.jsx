@@ -1,53 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { Moon, Sun } from "lucide-react";
 import { flushSync } from "react-dom";
 import { cn } from "@/lib/utils";
+import useTheme from "../../hook/useTheme";
 
 export const AnimatedThemeToggler = ({
   className,
   duration = 400,
   ...props
 }) => {
-  const [isDark, setIsDark] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
   const buttonRef = useRef(null);
 
-  useEffect(() => {
-    const updateTheme = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-
-    updateTheme();
-
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const applyTheme = (newTheme) => {
-    setIsDark(newTheme);
-    document.documentElement.classList.toggle("dark", newTheme);
-    localStorage.setItem("theme", newTheme ? "dark" : "light");
-  };
-
-  const toggleTheme = useCallback(async () => {
+  const handleToggleTheme = useCallback(async () => {
     if (!buttonRef.current) return;
-
-    const newTheme = !isDark;
 
     if (!document.startViewTransition) {
       flushSync(() => {
-        applyTheme(newTheme);
+        toggleTheme();
       });
       return;
     }
 
     const transition = document.startViewTransition(() => {
       flushSync(() => {
-        applyTheme(newTheme);
+        toggleTheme();
       });
     });
 
@@ -77,16 +55,16 @@ export const AnimatedThemeToggler = ({
         pseudoElement: "::view-transition-new(root)",
       }
     );
-  }, [isDark, duration]);
+  }, [toggleTheme, duration]);
 
   return (
     <button
       ref={buttonRef}
-      onClick={toggleTheme}
+      onClick={handleToggleTheme}
       className={cn(className)}
       {...props}
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      {isDark ? <Sun /> : <Moon />}
       <span className="sr-only">Toggle theme</span>
     </button>
   );
