@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "breakdownNo": "BD-2026-001",
+    "equipmentNo": "EQ-001",
+    "machine": "Compressor A",
+    "area": "Utility Room",
+    "line": "Utility",
+    "issue": "Motor overload",
+    "severity": "High",
+    "status": "Closed",
+    "startTime": "2026-03-20 09:15",
+    "endTime": "2026-03-20 10:05",
+    "downtimeMin": 50,
+    "rootCause": "Cooling fan blocked by dust accumulation",
+    "actionTaken": "Cleaned fan cover and reset overload relay",
+    "technician": "Somchai",
+    "reportedBy": "Operator A"
+  }
+]

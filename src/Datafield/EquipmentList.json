@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "equipmentNo": "EQ-001",
+    "name": "Compressor A",
+    "model": "Atlas Copco GA55",
+    "serialNo": "SN-COMP-2026-001",
+    "category": "Air Compressor",
+    "area": "Utility Room",
+    "line": "Utility",
+    "owner": "Maintenance",
+    "status": "Running",
+    "criticality": "High",
+    "installDate": "2024-06-10",
+    "lastMaintenance": "2026-03-10",
+    "nextPmDate": "2026-03-28",
+    "healthScore": 88
+  }
+]

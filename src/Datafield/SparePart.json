@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "partNo": "SP-001",
+    "name": "Bearing 6204",
+    "category": "Bearing",
+    "equipmentType": "Motor / Fan",
+    "location": "Store A-01",
+    "supplier": "SKF Thailand",
+    "unit": "pcs",
+    "qty": 12,
+    "minStock": 10,
+    "maxStock": 40,
+    "reorderPoint": 15,
+    "lastUpdated": "2026-03-20",
+    "status": "Normal",
+    "usage30d": 8
+  }
+]

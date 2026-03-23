@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "planNo": "MP-2026-001",
+    "machine": "Compressor A",
+    "equipmentNo": "EQ-001",
+    "area": "Utility Room",
+    "type": "Preventive Maintenance",
+    "dueDate": "2026-03-28",
+    "status": "Scheduled",
+    "priority": "High",
+    "technician": "Somchai",
+    "frequency": "Monthly",
+    "progress": 15,
+    "description": "Check pressure, clean filter, inspect vibration"
+  }
+]

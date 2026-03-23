@@ -1,166 +1,149 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Search,
-  Filter,
-  RefreshCw,
-  Cpu,
-  CheckCircle2,
-  AlertTriangle,
-  Wrench,
-  MapPin,
-} from "lucide-react";
+import { Search, Filter, RefreshCw, CalendarDays, Wrench, AlertTriangle, CircleDashed } from "lucide-react";
 import BarNav from "./BarNav";
 
-export default function EquipmentList() {
-  const [equipments, setEquipments] = useState([]);
+export default function MaintenancePlan() {
+  const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // UI state รอผูก API/filter จริง
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [areaFilter, setAreaFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
 
   useEffect(() => {
-    const fetchEquipments = async () => {
+    const fetchPlans = async () => {
       try {
         setLoading(true);
         setError("");
 
-        // const res = await fetch("http://localhost:7500/api/equipments");
-        // if (!res.ok) throw new Error("Failed to fetch equipments");
+        // ตัวอย่างตอนต่อ API จริง
+        // const res = await fetch("http://localhost:7500/api/maintenance-plans");
+        // if (!res.ok) throw new Error("Failed to fetch maintenance plans");
         // const data = await res.json();
-        // setEquipments(data);
+        // setPlans(data);
 
         setTimeout(() => {
-          setEquipments([
+          setPlans([
             {
               id: 1,
+              planNo: "MP-2026-001",
+              machine: "Compressor A",
               equipmentNo: "EQ-001",
-              name: "Compressor A",
-              model: "Atlas Copco GA55",
-              serialNo: "SN-COMP-2026-001",
-              category: "Air Compressor",
               area: "Utility Room",
-              line: "Utility",
-              owner: "Maintenance",
-              status: "Running",
-              criticality: "High",
-              installDate: "2024-06-10",
-              lastMaintenance: "2026-03-10",
-              nextPmDate: "2026-03-28",
-              healthScore: 88,
+              type: "Preventive Maintenance",
+              dueDate: "2026-03-28",
+              status: "Scheduled",
+              priority: "High",
+              technician: "Somchai",
+              frequency: "Monthly",
+              progress: 15,
+              description: "Check pressure, clean filter, inspect vibration, lubricate bearings",
             },
             {
               id: 2,
-              equipmentNo: "EQ-002",
-              name: "SMT Machine B",
-              model: "Panasonic NPM-D3",
-              serialNo: "SN-SMT-2026-014",
-              category: "SMT Machine",
+              planNo: "MP-2026-002",
+              machine: "SMT Machine B",
+              equipmentNo: "EQ-014",
               area: "SMT Line 2",
-              line: "SMT",
-              owner: "Production",
-              status: "Idle",
-              criticality: "High",
-              installDate: "2023-11-01",
-              lastMaintenance: "2026-03-15",
-              nextPmDate: "2026-03-30",
-              healthScore: 74,
+              type: "Corrective Maintenance",
+              dueDate: "2026-03-30",
+              status: "In Progress",
+              priority: "Medium",
+              technician: "Anan",
+              frequency: "As Required",
+              progress: 55,
+              description: "Sensor calibration and conveyor alignment check",
             },
             {
               id: 3,
-              equipmentNo: "EQ-003",
-              name: "Cooling Fan C",
-              model: "Mitsubishi CF-220",
-              serialNo: "SN-FAN-2026-021",
-              category: "Cooling System",
+              planNo: "MP-2026-003",
+              machine: "Cooling Fan C",
+              equipmentNo: "EQ-021",
               area: "Assembly Zone",
-              line: "Assembly",
-              owner: "Facility",
-              status: "Maintenance",
-              criticality: "Medium",
-              installDate: "2022-08-20",
-              lastMaintenance: "2026-03-05",
-              nextPmDate: "2026-04-02",
-              healthScore: 61,
+              type: "Preventive Maintenance",
+              dueDate: "2026-04-02",
+              status: "Pending Approval",
+              priority: "Low",
+              technician: "Napat",
+              frequency: "Quarterly",
+              progress: 0,
+              description: "Inspection checklist waiting supervisor approval",
             },
             {
               id: 4,
-              equipmentNo: "EQ-004",
-              name: "Hydraulic Press D",
-              model: "Komatsu H2-500",
-              serialNo: "SN-PRESS-2026-030",
-              category: "Press Machine",
+              planNo: "MP-2026-004",
+              machine: "Hydraulic Press D",
+              equipmentNo: "EQ-030",
               area: "Press Shop",
-              line: "Press",
-              owner: "Production",
-              status: "Breakdown",
-              criticality: "High",
-              installDate: "2021-04-18",
-              lastMaintenance: "2026-02-25",
-              nextPmDate: "2026-03-26",
-              healthScore: 39,
+              type: "Preventive Maintenance",
+              dueDate: "2026-03-26",
+              status: "Overdue",
+              priority: "High",
+              technician: "Kittipong",
+              frequency: "Monthly",
+              progress: 20,
+              description: "Oil pressure inspection and seal replacement",
             },
           ]);
           setLoading(false);
         }, 600);
       } catch (err) {
-        setError(err.message || "Failed to load equipment list");
+        setError(err.message || "Failed to load maintenance plans");
         setLoading(false);
       }
     };
 
-    fetchEquipments();
+    fetchPlans();
   }, []);
 
-  const filteredEquipments = useMemo(() => {
-    return equipments.filter((item) => {
+  const filteredPlans = useMemo(() => {
+    return plans.filter((item) => {
       const matchSearch =
+        item.machine.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.planNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.equipmentNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.serialNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.area.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchStatus =
         statusFilter === "all" ? true : item.status === statusFilter;
 
-      const matchArea = areaFilter === "all" ? true : item.area === areaFilter;
+      const matchPriority =
+        priorityFilter === "all" ? true : item.priority === priorityFilter;
 
-      return matchSearch && matchStatus && matchArea;
+      return matchSearch && matchStatus && matchPriority;
     });
-  }, [equipments, searchTerm, statusFilter, areaFilter]);
+  }, [plans, searchTerm, statusFilter, priorityFilter]);
 
   const summary = useMemo(() => {
     return {
-      total: equipments.length,
-      running: equipments.filter((e) => e.status === "Running").length,
-      maintenance: equipments.filter((e) => e.status === "Maintenance").length,
-      breakdown: equipments.filter((e) => e.status === "Breakdown").length,
+      total: plans.length,
+      scheduled: plans.filter((p) => p.status === "Scheduled").length,
+      inProgress: plans.filter((p) => p.status === "In Progress").length,
+      overdue: plans.filter((p) => p.status === "Overdue").length,
     };
-  }, [equipments]);
-
-  const areaOptions = useMemo(() => {
-    return [...new Set(equipments.map((item) => item.area))];
-  }, [equipments]);
+  }, [plans]);
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Running":
-        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300";
-      case "Idle":
-        return "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300";
-      case "Maintenance":
+      case "Scheduled":
         return "bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300";
-      case "Breakdown":
+      case "In Progress":
+        return "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300";
+      case "Pending Approval":
+        return "bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300";
+      case "Overdue":
         return "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300";
+      case "Completed":
+        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300";
       default:
         return "bg-gray-100 text-gray-700 dark:bg-zinc-800 dark:text-zinc-300";
     }
   };
 
-  const getCriticalityClass = (criticality) => {
-    switch (criticality) {
+  const getPriorityClass = (priority) => {
+    switch (priority) {
       case "High":
         return "text-rose-600 dark:text-rose-400";
       case "Medium":
@@ -172,23 +155,17 @@ export default function EquipmentList() {
     }
   };
 
-  const getHealthBarClass = (score) => {
-    if (score >= 80) return "bg-emerald-500";
-    if (score >= 60) return "bg-amber-500";
-    return "bg-rose-500";
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
-      <BarNav title="Equipment List" />
+      <BarNav title="Maintenance Plan" />
 
       <div className="max-w-7xl mx-auto p-6 space-y-6 text-gray-900 dark:text-zinc-100">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Equipment Master Data</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">Maintenance Planning</h1>
             <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-              View equipment details, operating status, maintenance schedule, and asset ownership.
+              Track preventive and corrective maintenance plans, schedule execution, and monitor task status.
             </p>
           </div>
 
@@ -201,29 +178,29 @@ export default function EquipmentList() {
           </button>
         </div>
 
-        {/* Summary */}
+        {/* Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <SummaryCard
-            title="Total Equipment"
+            title="Total Plans"
             value={summary.total}
-            icon={<Cpu size={18} />}
+            icon={<CalendarDays size={18} />}
             color="sky"
           />
           <SummaryCard
-            title="Running"
-            value={summary.running}
-            icon={<CheckCircle2 size={18} />}
-            color="emerald"
+            title="Scheduled"
+            value={summary.scheduled}
+            icon={<CircleDashed size={18} />}
+            color="blue"
           />
           <SummaryCard
-            title="Under Maintenance"
-            value={summary.maintenance}
+            title="In Progress"
+            value={summary.inProgress}
             icon={<Wrench size={18} />}
             color="amber"
           />
           <SummaryCard
-            title="Breakdown"
-            value={summary.breakdown}
+            title="Overdue"
+            value={summary.overdue}
             icon={<AlertTriangle size={18} />}
             color="rose"
           />
@@ -242,15 +219,12 @@ export default function EquipmentList() {
                 Search
               </label>
               <div className="relative">
-                <Search
-                  size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by equipment no, name, model, serial no, area"
+                  placeholder="Search by machine, plan no, equipment no, area"
                   className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
                 />
               </div>
@@ -266,37 +240,36 @@ export default function EquipmentList() {
                 className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
               >
                 <option value="all">All Status</option>
-                <option value="Running">Running</option>
-                <option value="Idle">Idle</option>
-                <option value="Maintenance">Maintenance</option>
-                <option value="Breakdown">Breakdown</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Pending Approval">Pending Approval</option>
+                <option value="Overdue">Overdue</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-2">
-                Area
+                Priority
               </label>
               <select
-                value={areaFilter}
-                onChange={(e) => setAreaFilter(e.target.value)}
+                value={priorityFilter}
+                onChange={(e) => setPriorityFilter(e.target.value)}
                 className="w-full rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-sky-500"
               >
-                <option value="all">All Areas</option>
-                {areaOptions.map((area) => (
-                  <option key={area} value={area}>
-                    {area}
-                  </option>
-                ))}
+                <option value="all">All Priority</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Loading / Error */}
+        {/* State */}
         {loading && (
           <div className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-8 text-center text-gray-500 dark:text-zinc-400">
-            Loading equipment list...
+            Loading maintenance plans...
           </div>
         )}
 
@@ -308,17 +281,19 @@ export default function EquipmentList() {
 
         {!loading && !error && (
           <>
+            {/* Table Header Info */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold">Equipment List</h2>
+                <h2 className="text-lg font-semibold">Plan List</h2>
                 <p className="text-sm text-gray-500 dark:text-zinc-400">
-                  Showing {filteredEquipments.length} of {equipments.length} equipment items
+                  Showing {filteredPlans.length} of {plans.length} maintenance plans
                 </p>
               </div>
             </div>
 
+            {/* Cards */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {filteredEquipments.map((item) => (
+              {filteredPlans.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm"
@@ -326,68 +301,59 @@ export default function EquipmentList() {
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-zinc-500">
-                        {item.equipmentNo}
+                        {item.planNo}
                       </p>
-                      <h3 className="text-lg font-bold mt-1">{item.name}</h3>
+                      <h3 className="text-lg font-bold mt-1">{item.machine}</h3>
                       <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
-                        {item.model}
+                        {item.equipmentNo} • {item.area}
                       </p>
                     </div>
 
                     <div className="flex flex-col items-end gap-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusClass(item.status)}`}
-                      >
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusClass(item.status)}`}>
                         {item.status}
                       </span>
-                      <span
-                        className={`text-sm font-semibold ${getCriticalityClass(item.criticality)}`}
-                      >
-                        {item.criticality} Critical
+                      <span className={`text-sm font-semibold ${getPriorityClass(item.priority)}`}>
+                        {item.priority} Priority
                       </span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                    <InfoItem label="Serial No" value={item.serialNo} />
-                    <InfoItem label="Category" value={item.category} />
-                    <InfoItem label="Area" value={item.area} />
-                    <InfoItem label="Line" value={item.line} />
-                    <InfoItem label="Owner" value={item.owner} />
-                    <InfoItem label="Install Date" value={item.installDate} />
-                    <InfoItem label="Last Maintenance" value={item.lastMaintenance} />
-                    <InfoItem label="Next PM" value={item.nextPmDate} />
+                    <InfoItem label="Type" value={item.type} />
+                    <InfoItem label="Due Date" value={item.dueDate} />
+                    <InfoItem label="Technician" value={item.technician} />
+                    <InfoItem label="Frequency" value={item.frequency} />
                   </div>
 
                   <div className="mb-4">
+                    <p className="text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                      Description
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <div>
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-sm font-medium text-gray-700 dark:text-zinc-300">
-                        Health Score
+                        Progress
                       </p>
                       <p className="text-sm text-gray-500 dark:text-zinc-400">
-                        {item.healthScore}%
+                        {item.progress}%
                       </p>
                     </div>
 
                     <div className="w-full h-2.5 rounded-full bg-gray-200 dark:bg-zinc-800 overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all ${getHealthBarClass(
-                          item.healthScore
-                        )}`}
-                        style={{ width: `${item.healthScore}%` }}
+                        className="h-full rounded-full bg-sky-600 transition-all"
+                        style={{ width: `${item.progress}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2 text-sm text-gray-500 dark:text-zinc-400 mb-5">
-                    <MapPin size={16} className="mt-0.5 shrink-0" />
-                    <span>
-                      Installed in <span className="font-medium text-gray-700 dark:text-zinc-300">{item.area}</span> under{" "}
-                      <span className="font-medium text-gray-700 dark:text-zinc-300">{item.owner}</span> responsibility.
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
+                  <div className="mt-5 flex flex-wrap gap-2">
                     <button
                       type="button"
                       className="px-4 py-2 rounded-xl bg-sky-600 text-white text-sm font-medium hover:bg-sky-700 transition"
@@ -398,17 +364,17 @@ export default function EquipmentList() {
                       type="button"
                       className="px-4 py-2 rounded-xl border border-gray-200 dark:border-zinc-700 text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
                     >
-                      Edit Equipment
+                      Edit Plan
                     </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            {filteredEquipments.length === 0 && (
+            {filteredPlans.length === 0 && (
               <div className="rounded-3xl border border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-10 text-center">
                 <p className="text-gray-500 dark:text-zinc-400">
-                  No equipment found for the selected filters.
+                  No maintenance plans found for the selected filters.
                 </p>
               </div>
             )}
@@ -422,10 +388,8 @@ export default function EquipmentList() {
 function SummaryCard({ title, value, icon, color }) {
   const colorMap = {
     sky: "bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300",
-    emerald:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300",
-    amber:
-      "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
+    blue: "bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300",
+    amber: "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300",
     rose: "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300",
   };
 
@@ -436,7 +400,9 @@ function SummaryCard({ title, value, icon, color }) {
           <p className="text-sm text-gray-500 dark:text-zinc-400">{title}</p>
           <h3 className="text-3xl font-bold mt-2">{value}</h3>
         </div>
-        <div className={`p-3 rounded-2xl ${colorMap[color]}`}>{icon}</div>
+        <div className={`p-3 rounded-2xl ${colorMap[color]}`}>
+          {icon}
+        </div>
       </div>
     </div>
   );

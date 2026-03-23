@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "reportNo": "RPT-2026-001",
+    "title": "Monthly Breakdown Report",
+    "type": "Breakdown",
+    "period": "March 2026",
+    "generatedDate": "2026-03-20",
+    "generatedBy": "System",
+    "format": "PDF",
+    "status": "Ready",
+    "description": "Summary of equipment breakdown events, downtime, and major causes for the month.",
+    "fileSize": "1.8 MB"
+  }
+]
