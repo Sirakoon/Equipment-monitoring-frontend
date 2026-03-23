@@ -151,20 +151,20 @@ function Homepage() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-full bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700">
-                            <span className="text-sm text-gray-500 dark:text-zinc-400 font-medium">
+                        <div className="flex items-center gap-2 px-3 py-1 rounded-4xl bg-black dark:bg-white border border-gray-200 dark:border-zinc-700">
+                            <span className="text-sm text-white dark:text-black font-medium">
                                 Theme
                             </span>
                             <AnimatedThemeToggler
                                 duration={500}
                                 size={20}
-                                className="text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950/30 p-2 rounded-full transition-colors"
+                                className="text-sky-500 hover:bg-sky-50 dark:hover:bg-sky-950 p-2 rounded-full transition-colors"
                             />
                         </div>
 
                         <button
                             onClick={() => setIsLoginOpen(true)}
-                            className="flex items-center gap-2 px-5 py-3 rounded-full font-semibold text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-all border border-gray-200 dark:border-zinc-700"
+                            className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90 transition-all"
                         >
                             <LogIn size={18} />
                             Login
