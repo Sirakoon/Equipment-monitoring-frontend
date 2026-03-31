@@ -13,6 +13,7 @@ const Report = lazy(() => import('./pages/Reports'));
 const BreakdownHistory = lazy(() => import('./pages/BreakdownHis'));
 const SpareParts = lazy(() => import('./pages/SparePart'));
 const UserManagement = lazy(() => import('./pages/UserManagement'));
+const Support = lazy(() => import('./pages/Support'));
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/Breakdown-History" element={<BreakdownHistory />} />
           <Route path="/Spare-Parts" element={<SpareParts />} />
           <Route path="/User-Management" element={<UserManagement />} />
+          <Route path="/Support" element={<Support />} />
         </Routes>
       </Suspense>
     </Router>

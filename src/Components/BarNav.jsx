@@ -30,6 +30,7 @@ export default function BarNav({ title = "Page" }) {
     { label: "Breakdown", path: "/Breakdown-History" },
     { label: "Spare Parts", path: "/Spare-Parts" },
     { label: "Users", path: "/User-Management" },
+    { label: "Support", path: "/Support" },
   ];
 
   return (
