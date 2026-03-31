@@ -1,35 +1,46 @@
 import { useState } from "react";
 import { X, ArrowLeft } from "lucide-react";
 import { useAuthContext } from "../context/AuthContext";
+import { authService } from "../service/authService";
 
 export default function LoginModal({ isOpen, onClose }) {
   const [view, setView] = useState("login");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { login } = useAuthContext();
 
   if (!isOpen) return null;
 
   const handleClose = () => {
     setView("login");
+    setUsername("");
+    setPassword("");
+    setError("");
     onClose();
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // mock response ก่อน
-    const fakeResponse = {
-      userData: {
-        id: 1,
-        username: "admin",
-        fullName: "System Administrator",
-        role: "Administrator",
-        department: "IT",
-      },
-      accessToken: "mock-jwt-token-123456",
-    };
+    if (!username || !password) {
+      setError("Username and password are required");
+      setLoading(false);
+      return;
+    }
 
-    login(fakeResponse);
-    handleClose();
+    try {
+      const result = await authService.login(username, password);
+      login({ userData: result.user, accessToken: result.token });
+      handleClose();
+    } catch (err) {
+      setError(err.message || "Login failed. Try admin/admin123");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,6 +68,12 @@ export default function LoginModal({ isOpen, onClose }) {
               Login to System
             </h2>
 
+            {error && (
+              <div className="mb-4 p-3 bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <form className="space-y-4" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-medium ml-1 text-gray-700 dark:text-zinc-300">
@@ -64,8 +81,11 @@ export default function LoginModal({ isOpen, onClose }) {
                 </label>
                 <input
                   type="text"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"
-                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:border-sky-500"
+                  placeholder="admin or tech01"
+                  disabled={loading}
                 />
               </div>
 
@@ -75,17 +95,25 @@ export default function LoginModal({ isOpen, onClose }) {
                 </label>
                 <input
                   type="password"
-                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:border-sky-500"
                   placeholder="••••••••"
+                  disabled={loading}
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-sky-600 text-white py-3 rounded-xl font-bold hover:bg-sky-700 transition-colors"
+                disabled={loading}
+                className="w-full bg-sky-600 text-white py-3 rounded-xl font-bold hover:bg-sky-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign In
+                {loading ? "Signing In..." : "Sign In"}
               </button>
+
+              <p className="text-xs text-gray-500 dark:text-zinc-400 text-center mt-4">
+                Demo: admin / admin123
+              </p>
             </form>
           </>
         )}

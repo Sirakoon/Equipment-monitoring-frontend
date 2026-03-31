@@ -10,6 +10,7 @@ import {
   MapPin,
 } from "lucide-react";
 import BarNav from "../Components/BarNav";
+import { equipmentService } from "../service/equipmentService";
 
 export default function EquipmentList() {
   const [equipments, setEquipments] = useState([]);
@@ -25,79 +26,168 @@ export default function EquipmentList() {
       try {
         setLoading(true);
         setError("");
+        const data = await equipmentService.getAll();
+        setEquipments(data);
+      } catch (err) {
+        setError(err.message || "Failed to load equipments");
+        setLoading(false);
+      }
+    };
 
-        // const res = await fetch("http://localhost:7500/api/equipments");
-        // if (!res.ok) throw new Error("Failed to fetch equipments");
-        // const data = await res.json();
-        // setEquipments(data);
+    fetchEquipments();
+  }, []);
 
-        setTimeout(() => {
-          setEquipments([
-            {
-              id: 1,
-              equipmentNo: "EQ-001",
-              name: "Compressor A",
-              model: "Atlas Copco GA55",
-              serialNo: "SN-COMP-2026-001",
-              category: "Air Compressor",
-              area: "Utility Room",
-              line: "Utility",
-              owner: "Maintenance",
-              status: "Running",
-              criticality: "High",
-              installDate: "2024-06-10",
-              lastMaintenance: "2026-03-10",
-              nextPmDate: "2026-03-28",
-              healthScore: 88,
-            },
-            {
-              id: 2,
-              equipmentNo: "EQ-002",
-              name: "SMT Machine B",
-              model: "Panasonic NPM-D3",
-              serialNo: "SN-SMT-2026-014",
-              category: "SMT Machine",
-              area: "SMT Line 2",
-              line: "SMT",
-              owner: "Production",
-              status: "Idle",
-              criticality: "High",
-              installDate: "2023-11-01",
-              lastMaintenance: "2026-03-15",
-              nextPmDate: "2026-03-30",
-              healthScore: 74,
-            },
-            {
-              id: 3,
-              equipmentNo: "EQ-003",
-              name: "Cooling Fan C",
-              model: "Mitsubishi CF-220",
-              serialNo: "SN-FAN-2026-021",
-              category: "Cooling System",
-              area: "Assembly Zone",
-              line: "Assembly",
-              owner: "Facility",
-              status: "Maintenance",
-              criticality: "Medium",
-              installDate: "2022-08-20",
-              lastMaintenance: "2026-03-05",
-              nextPmDate: "2026-04-02",
-              healthScore: 61,
-            },
-            {
-              id: 4,
-              equipmentNo: "EQ-004",
-              name: "Hydraulic Press D",
-              model: "Komatsu H2-500",
-              serialNo: "SN-PRESS-2026-030",
-              category: "Press Machine",
-              area: "Press Shop",
-              line: "Press",
-              owner: "Production",
-              status: "Breakdown",
-              criticality: "High",
-              installDate: "2021-04-18",
-              lastMaintenance: "2026-02-25",
+  const filteredEquipments = useMemo(() => {
+    return equipments.filter((item) => {
+      const matchSearch =
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.equipmentNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchStatus =
+        statusFilter === "all" ? true : item.status === statusFilter;
+
+      const matchArea = areaFilter === "all" ? true : item.area === areaFilter;
+
+      return matchSearch && matchStatus && matchArea;
+    });
+  }, [equipments, searchTerm, statusFilter, areaFilter]);
+
+  const areas = useMemo(() => {
+    return [...new Set(equipments.map((e) => e.area))];
+  }, [equipments]);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Running":
+        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300";
+      case "Idle":
+        return "bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300";
+      case "Maintenance":
+        return "bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300";
+      case "Breakdown":
+        return "bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300";
+      default:
+        return "bg-gray-100 text-gray-700 dark:bg-zinc-800 dark:text-zinc-300";
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Running":
+        return <CheckCircle2 size={16} />;
+      case "Breakdown":
+        return <AlertTriangle size={16} />;
+      case "Maintenance":
+        return <Wrench size={16} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+      <BarNav title="Equipment List" />
+
+      <div className="max-w-7xl mx-auto p-6 space-y-6 text-gray-900 dark:text-zinc-100">
+        {/* Search & Filter */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search equipment..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900"
+            />
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900"
+            >
+              <option value="all">All Status</option>
+              <option value="Running">Running</option>
+              <option value="Idle">Idle</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Breakdown">Breakdown</option>
+            </select>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg bg-sky-600 text-white hover:bg-sky-700 flex items-center gap-2"
+            >
+              <RefreshCw size={18} /> Refresh
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-4 bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="text-center py-12">Loading equipments...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredEquipments.map((equipment) => (
+              <div
+                key={equipment.id}
+                className="bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-800 p-4 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Cpu size={20} className="text-sky-600" />
+                    <div>
+                      <h3 className="font-bold text-sm">{equipment.name}</h3>
+                      <p className="text-xs text-gray-500 dark:text-zinc-400">
+                        {equipment.equipmentNo}
+                      </p>
+                    </div>
+                  </div>
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium flex items-center gap-1 ${getStatusColor(
+                      equipment.status
+                    )}`}
+                  >
+                    {getStatusIcon(equipment.status)}
+                    {equipment.status}
+                  </span>
+                </div>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-zinc-400">Model:</span>
+                    <span className="font-medium">{equipment.model}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <MapPin size={14} className="text-gray-400 mt-1" />
+                    <span className="text-gray-600 dark:text-zinc-400">{equipment.area}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600 dark:text-zinc-400">Health:</span>
+                    <span className="font-bold text-sky-600">{equipment.healthScore}%</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-500">Last PM:</span>
+                    <span>{equipment.lastMaintenance}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && filteredEquipments.length === 0 && (
+          <div className="text-center py-12 text-gray-500">No equipments found</div>
+        )}
+      </div>
+    </div>
+  );
+}
               nextPmDate: "2026-03-26",
               healthScore: 39,
             },

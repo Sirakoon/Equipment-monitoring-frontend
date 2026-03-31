@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import BarNav from "../Components/BarNav";
 
+// Import user service (create it in the next step)
+// For now, we'll use a mock fetch from the API
+
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,12 +30,10 @@ export default function UserManagement() {
         setLoading(true);
         setError("");
 
-        // const res = await fetch("http://localhost:7500/api/users");
-        // if (!res.ok) throw new Error("Failed to fetch users");
-        // const data = await res.json();
-        // setUsers(data);
-
-        setTimeout(() => {
+        // Fetch from API
+        const token = localStorage.getItem("token");
+        if (!token) {
+          // Provide mock data if not authenticated
           setUsers([
             {
               id: 1,
@@ -45,44 +46,23 @@ export default function UserManagement() {
               lastLogin: "2026-03-23 08:15",
               permissions: "Full access to all modules",
             },
-            {
-              id: 2,
-              username: "tech01",
-              fullName: "Somchai Prasert",
-              email: "somchai@company.local",
-              role: "Maintenance",
-              department: "Maintenance",
-              status: "Active",
-              lastLogin: "2026-03-22 19:40",
-              permissions: "Maintenance, breakdown, reports",
-            },
-            {
-              id: 3,
-              username: "prod02",
-              fullName: "Anan Chaiyo",
-              email: "anan@company.local",
-              role: "Production",
-              department: "Production",
-              status: "Inactive",
-              lastLogin: "2026-03-10 14:20",
-              permissions: "Equipment view, report view",
-            },
-            {
-              id: 4,
-              username: "store01",
-              fullName: "Napat Suksai",
-              email: "napat@company.local",
-              role: "Store Keeper",
-              department: "Warehouse",
-              status: "Active",
-              lastLogin: "2026-03-23 07:55",
-              permissions: "Spare parts, stock movement",
-            },
           ]);
           setLoading(false);
-        }, 600);
+          return;
+        }
+
+        const res = await fetch("http://localhost:7500/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch users");
+        const data = await res.json();
+        setUsers(data);
       } catch (err) {
         setError(err.message || "Failed to load users");
+      } finally {
         setLoading(false);
       }
     };
@@ -145,6 +125,7 @@ export default function UserManagement() {
 
           <button
             type="button"
+            onClick={() => window.location.reload()}
             className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
           >
             <RefreshCw size={16} />
