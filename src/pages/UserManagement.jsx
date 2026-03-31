@@ -11,9 +11,7 @@ import {
   Clock3,
 } from "lucide-react";
 import BarNav from "../Components/BarNav";
-
-// Import user service (create it in the next step)
-// For now, we'll use a mock fetch from the API
+import { userService } from "../service/userService";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -29,39 +27,11 @@ export default function UserManagement() {
       try {
         setLoading(true);
         setError("");
-
-        // Fetch from API
-        const token = localStorage.getItem("token");
-        if (!token) {
-          // Provide mock data if not authenticated
-          setUsers([
-            {
-              id: 1,
-              username: "admin",
-              fullName: "System Administrator",
-              email: "admin@company.local",
-              role: "Administrator",
-              department: "IT",
-              status: "Active",
-              lastLogin: "2026-03-23 08:15",
-              permissions: "Full access to all modules",
-            },
-          ]);
-          setLoading(false);
-          return;
-        }
-
-        const res = await fetch("http://localhost:7500/api/users", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!res.ok) throw new Error("Failed to fetch users");
-        const data = await res.json();
-        setUsers(data);
+        const data = await userService.getAll();
+        setUsers(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || "Failed to load users");
+        setUsers([]);
       } finally {
         setLoading(false);
       }

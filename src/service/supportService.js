@@ -1,11 +1,5 @@
-// Support Service - API communication for support tickets
-const API_BASE = "http://localhost:7500/api";
-
+import { endpoints } from "../api";
 import { authService } from "./authService";
-
-const endpoints = {
-  support: `${API_BASE}/support`
-};
 
 const getHeaders = () => {
   const token = authService.getToken();
@@ -19,7 +13,7 @@ export const supportService = {
   // Get all support tickets
   async getAll() {
     try {
-      const response = await fetch(`${endpoints.support}`, {
+      const response = await fetch(endpoints.support, {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error("Failed to fetch support tickets");
@@ -45,7 +39,7 @@ export const supportService = {
   // Create new support ticket
   async create(data) {
     try {
-      const response = await fetch(`${endpoints.support}`, {
+      const response = await fetch(endpoints.support, {
         method: "POST",
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -101,13 +95,14 @@ export const supportService = {
   // Get support statistics
   async getStatistics() {
     try {
-      const response = await fetch(`${endpoints.support}/stats/overview`, {
+      const response = await fetch(`${endpoints.support}/stats`, {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error("Failed to fetch support statistics");
       return await response.json();
     } catch (error) {
-      throw new Error(error.message || "Error fetching statistics");
+      console.error("Error fetching statistics:", error);
+      return { data: { total: 0, open: 0, resolved: 0 } };
     }
   },
 

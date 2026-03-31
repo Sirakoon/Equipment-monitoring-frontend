@@ -1,9 +1,9 @@
-import { endpoints } from "../api";
+const API_BASE = "http://localhost:7500/api";
 
 export const authService = {
   async login(username, password) {
     try {
-      const response = await fetch(`${endpoints.users.replace("/users", "")}/auth/login`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

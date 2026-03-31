@@ -44,10 +44,11 @@ function Support() {
     try {
       setLoading(true);
       setError("");
-      const response = await supportService.getAll();
-      setTickets(response.data || []);
+      const data = await supportService.getAll();
+      setTickets(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
+      setTickets([]);
     } finally {
       setLoading(false);
     }
@@ -56,9 +57,10 @@ function Support() {
   const fetchStatistics = async () => {
     try {
       const response = await supportService.getStatistics();
-      setStats(response.data);
+      setStats(response || { data: { total: 0, open: 0, resolved: 0 } });
     } catch (err) {
-      console.log("Error fetching statistics");
+      console.log("Error fetching statistics:", err.message);
+      setStats({ data: { total: 0, open: 0, resolved: 0 } });
     }
   };
 
@@ -107,19 +109,23 @@ function Support() {
   const handleAddComment = async (ticketId) => {
     if (!newComment.trim()) return;
     try {
-      await supportService.addComment(ticketId, newComment);
+      await supportService.addComment(ticketId, newComment, "User");
       setNewComment("");
       // Refresh ticket
       const response = await supportService.getById(ticketId);
-      setSelectedTicket(response.data);
+      setSelectedTicket(response);
     } catch (err) {
-      setError(err.message);
+      console.error("Error adding comment:", err.message);
     }
   };
 
   const handleCloseTicket = async (ticketId, resolution) => {
     try {
-      await supportService.closeTicket(ticketId, resolution);
+      await supportService.update(ticketId, { 
+        status: "resolved",
+        resolution: resolution,
+        closedAt: new Date().toISOString()
+      });
       fetchTickets();
       setSelectedTicket(null);
     } catch (err) {

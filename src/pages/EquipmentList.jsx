@@ -27,9 +27,11 @@ export default function EquipmentList() {
         setLoading(true);
         setError("");
         const data = await equipmentService.getAll();
-        setEquipments(data);
+        setEquipments(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || "Failed to load equipments");
+        setEquipments([]);
+      } finally {
         setLoading(false);
       }
     };
